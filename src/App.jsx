@@ -3,8 +3,10 @@ import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Home from './pages/Home'
 import Favorites from './pages/Favorites'
+import Watchlist from './pages/Watchlist'          // ✅ ADD
+import { MovieProvider } from './contexts/MovieContext' // ✅ ADD
 import { getPopularMovies, searchMovies } from './services/movieService'
-import './App.css'   // ✅ THIS WAS MISSING
+import './App.css'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -68,34 +70,38 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <Header onSearch={handleSearch} />
+    <MovieProvider>   {/* ✅ WRAP APP */}
+      <div className="app">
+        <Header onSearch={handleSearch} />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              movies={movies}
-              favorites={favorites}
-              onToggleFavorite={toggleFavorite}
-              loading={loading}
-              error={error}
-            />
-          }
-        />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                movies={movies}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                loading={loading}
+                error={error}
+              />
+            }
+          />
 
-        <Route
-          path="/favorites"
-          element={
-            <Favorites
-              favorites={favorites}
-              onToggleFavorite={toggleFavorite}
-            />
-          }
-        />
-      </Routes>
-    </div>
+          <Route
+            path="/favorites"
+            element={
+              <Favorites
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+              />
+            }
+          />
+
+          <Route path="/watchlist" element={<Watchlist />} /> {/* ✅ ADD */}
+        </Routes>
+      </div>
+    </MovieProvider>
   )
 }
 

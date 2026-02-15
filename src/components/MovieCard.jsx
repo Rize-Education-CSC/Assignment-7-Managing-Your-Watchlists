@@ -1,7 +1,25 @@
+import { useMovieContext } from '../contexts/MovieContext'
+
 function MovieCard({ movie, isFavorite, onToggleFavorite }) {
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://placehold.co/300x450/667eea/ffffff?text=No+Image'
+
+  const {
+    addToWatchlist,
+    removeFromWatchlist,
+    isInWatchlist
+  } = useMovieContext()
+
+  const inWatchlist = isInWatchlist(movie.id)
+
+  function handleWatchlistClick() {
+    if (inWatchlist) {
+      removeFromWatchlist(movie.id)
+    } else {
+      addToWatchlist(movie)
+    }
+  }
 
   return (
     <div className="movie-card">
@@ -23,11 +41,26 @@ function MovieCard({ movie, isFavorite, onToggleFavorite }) {
           </span>
         </div>
 
+        {/* FAVORITES BUTTON (unchanged) */}
+        {onToggleFavorite && (
+          <button
+            className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
+            onClick={() => onToggleFavorite(movie)}
+          >
+            {isFavorite
+              ? '❤️ Remove Favorite'
+              : '♡ Add to Favorites'}
+          </button>
+        )}
+
+        {/* WATCHLIST BUTTON (new) */}
         <button
-          className={`favorite-button ${isFavorite ? 'favorited' : ''}`}
-          onClick={() => onToggleFavorite(movie)}
+          className="favorite-button"
+          onClick={handleWatchlistClick}
         >
-          {isFavorite ? '❤️ Remove Favorite' : '♡ Add to Favorites'}
+          {inWatchlist
+            ? '✔ Remove from Watchlist'
+            : '+ Add to Watchlist'}
         </button>
       </div>
     </div>
